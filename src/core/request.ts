@@ -1,10 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosProxyConfig } from 'axios';
-import { URL } from 'url';
 
 import { linkedinApiUrl } from '../../config';
 import { paramsSerializer } from '../utils/paramsSerializer';
 
-const buildUrl = (url: string) => new URL(url, linkedinApiUrl).toString();
+const buildUrl = (url: string) => linkedinApiUrl + url;
 
 type ConfigFullResponse = AxiosRequestConfig & { fullResponse?: true };
 type ConfigNonFullResponse = AxiosRequestConfig & { fullResponse?: false };
