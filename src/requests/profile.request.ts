@@ -1,6 +1,7 @@
 import { LinkedInRequest } from '../core/linkedin-request';
 import { GetOwnProfileResponse } from '../responses/own-profile.response.get';
 import { GetProfileResponse } from '../responses/profile.response.get';
+import { GetProfileContactInfoResponse } from '../responses/profile-contact-info.response.get';
 
 export class ProfileRequest {
   private request: LinkedInRequest;
@@ -21,14 +22,14 @@ export class ProfileRequest {
     });
   }
 
-  getContactInformation({ publicIdentifier }: { publicIdentifier: string }): Promise<GetProfileResponse> {
+  getProfileContactInformation({ publicIdentifier }: { publicIdentifier: string }): Promise<GetProfileContactInfoResponse> {
     const queryParams = {
       q: 'memberIdentity',
       memberIdentity: publicIdentifier,
       decorationId: 'com.linkedin.voyager.dash.deco.identity.profile.ProfileContactInfo-11',
     };
 
-    return this.request.get<GetProfileResponse>('identity/dash/profiles', {
+    return this.request.get<GetProfileContactInfoResponse>('identity/dash/profiles', {
       params: queryParams,
     });
   }
