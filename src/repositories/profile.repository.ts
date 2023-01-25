@@ -4,12 +4,17 @@ import { Client } from '../core/client';
 import { COMPANY_TYPE, LinkedInCompany } from '../entities/linkedin-company.entity';
 import { LinkedInMiniProfile, MINI_PROFILE_TYPE } from '../entities/linkedin-mini-profile.entity';
 import { LinkedInProfile, PROFILE_TYPE } from '../entities/linkedin-profile.entity';
+
 import { LinkedInVectorImage } from '../entities/linkedin-vector-image.entity';
+import { LinkedInVectorArtifact } from '../entities/linkedin-vector-artifact.entity';
+
 import { MiniProfile, ProfileId } from '../entities/mini-profile.entity';
 import { Profile } from '../entities/profile.entity';
+import { ProfileContactInfo } from '../entities/profile-contact-info.entity';
+import { LinkedInProfileContactInfo } from '../entities/linkedin-profile-contact-info.entity';
 
 const getProfilePictureUrls = (picture?: LinkedInVectorImage): string[] =>
-  map(picture?.artifacts, artifact => `${picture?.rootUrl}${artifact.fileIdentifyingUrlPathSegment}`);
+  map(picture?.artifacts, (artifact: LinkedInVectorArtifact) => `${picture?.rootUrl}${artifact.fileIdentifyingUrlPathSegment}`);
 
 const transformMiniProfile = (miniProfile: LinkedInMiniProfile): MiniProfile => ({
   ...miniProfile,
@@ -46,6 +51,20 @@ export class ProfileRepository {
     return {
       ...profile,
       company,
+      pictureUrls,
+    };
+  }
+  
+  async getProfileContactInfo({ publicIdentifier }: { publicIdentifier: string }): Promise<ProfileContactInfo | null> {
+    const response = await this.client.request.profile.getProfileContactInformation({ publicIdentifier });
+
+    const results = response.included || [];
+
+    const profile = results.find(r => r.$type === PROFILE_TYPE && r.publicIdentifier === publicIdentifier) as LinkedInProfileContactInfo;
+    const pictureUrls = getProfilePictureUrls(get(profile, 'profilePicture.displayImageReference.vectorImage', {}));
+
+    return {
+      ...profile,
       pictureUrls,
     };
   }
