@@ -58,6 +58,7 @@ export interface LinkedInProfile {
   defaultToActivityTab: boolean;
   educationOnProfileTopCardShown: boolean;
   entityUrn: ProfileUrn;
+  memorialized: boolean;
   firstName: string;
   lastName: string;
   geoLocation: LinkedInProfileGeoLocation;

@@ -21,6 +21,20 @@ export class ProfileRequest {
     });
   }
 
+  getContactInformation({ publicIdentifier }: { publicIdentifier: string }): Promise<GetProfileResponse> {
+    const queryParams = {
+      q: 'memberIdentity',
+      memberIdentity: publicIdentifier,
+      decorationId: 'com.linkedin.voyager.dash.deco.identity.profile.ProfileContactInfo-11',
+    };
+
+    return this.request.get<GetProfileResponse>('identity/dash/profiles', {
+      params: queryParams,
+    });
+  }
+
+
+  
   getOwnProfile(): Promise<GetOwnProfileResponse> {
     return this.request.get<GetOwnProfileResponse>('me');
   }
