@@ -44,7 +44,10 @@ export class ProfileRepository {
 
     const results = response.included || [];
 
-    const profile = results.find(r => r.$type === PROFILE_TYPE && r.publicIdentifier === publicIdentifier) as LinkedInProfile;
+    const profile = results.find(r => r.$type === PROFILE_TYPE && (r.publicIdentifier === publicIdentifier || r.entityUrn.endsWith(":" + publicIdentifier))) as LinkedInProfile;
+    if (!profile)
+      throw new Error('Failed to match returned user with publicIdentifier');
+
     const company = results.find(r => r.$type === COMPANY_TYPE && profile.headline.includes(r.name)) as LinkedInCompany;
     const pictureUrls = getProfilePictureUrls(get(profile, 'profilePicture.displayImageReference.vectorImage', {}));
 
@@ -60,7 +63,10 @@ export class ProfileRepository {
 
     const results = response.included || [];
 
-    const profile = results.find(r => r.$type === PROFILE_TYPE && r.publicIdentifier === publicIdentifier) as LinkedInProfileContactInfo;
+    const profile = results.find(r => r.$type === PROFILE_TYPE && (r.publicIdentifier === publicIdentifier || r.entityUrn.endsWith(":" + publicIdentifier))) as LinkedInProfileContactInfo;
+    if (!profile)
+      throw new Error('Failed to match returned user with publicIdentifier');
+
     const pictureUrls = getProfilePictureUrls(get(profile, 'profilePicture.displayImageReference.vectorImage', {}));
 
     return {
