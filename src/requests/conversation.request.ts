@@ -13,6 +13,17 @@ export class ConversationRequest {
     this.request = request;
   }
 
+  markConversationAsRead({ conversationId }: { conversationId: ConversationId }): Promise<void> {
+    const payload = {
+      patch: {
+        $set: {
+          read: true,
+        },
+      },
+    };
+    return this.request.post<void>(`messaging/conversations/${conversationId}`, payload);
+  }
+
   getConversation({ conversationId }: { conversationId: ConversationId }): Promise<GetConversationResponse> {
     const queryParams = {
       keyVersion: 'LEGACY_INBOX',
